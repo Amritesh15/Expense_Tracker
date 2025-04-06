@@ -36,3 +36,6 @@ mongoose
     console.error("❌ MongoDB Connection Error:", error.message);
     process.exit(1); // Exit the app if MongoDB connection fails
   });
+
+
+  //Amritesh made this.
