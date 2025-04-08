@@ -1,25 +1,33 @@
 import express from "express";
-
 import Expense from "../models/Expense.js";
+import authenticate from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Add a new expense
-router.post("/", async (req, res) => {
+// Get all expenses for a logged-in user
+router.get("/", authenticate, async (req, res) => {
   try {
-    const expense = new Expense(req.body);
-    await expense.save();
-    res.status(201).json(expense);
+    const expenses = await Expense.find({ userId: req.user.id }); // Use req.user.id from decoded JWT
+    res.status(200).json(expenses);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-// Get all expenses for a user
-router.get("/", async (req, res) => {
+// Add a new expense
+router.post("/", authenticate, async (req, res) => {
   try {
-    const expenses = await Expense.find({ userId: req.user.id });
-    res.status(200).json(expenses);
+    const { amount, category, description } = req.body;
+
+    const expense = new Expense({
+      userId: req.user.id, // Use req.user.id from decoded JWT
+      amount,
+      category,
+      description,
+    });
+
+    await expense.save();
+    res.status(201).json(expense);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
