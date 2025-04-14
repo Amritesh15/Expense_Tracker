@@ -3,7 +3,6 @@ import {
   Container,
   Typography,
   Box,
-  Button,
   Paper,
   List,
   ListItem,
@@ -11,6 +10,8 @@ import {
   ListItemSecondaryAction,
   IconButton,
   Fab,
+  Divider,
+  useTheme,
 } from '@mui/material';
 import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
@@ -26,6 +27,7 @@ interface Expense {
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
   const [expenses, setExpenses] = useState<Expense[]>([]);
 
   useEffect(() => {
@@ -81,43 +83,79 @@ const Dashboard = () => {
   const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
 
   return (
-    <Container>
-      <Box sx={{ mt: 4, mb: 4 }}>
-        <Typography variant="h4" component="h1" gutterBottom>
-          Dashboard
+    <Container maxWidth="md">
+      <Box sx={{ mt: 4, mb: 4, position: 'relative', minHeight: '80vh' }}>
+        <Typography variant="h4" component="h1" gutterBottom sx={{ color: theme.palette.primary.main }}>
+          Expense Dashboard
         </Typography>
-        <Paper elevation={3} sx={{ p: 3, mb: 3 }}>
-          <Typography variant="h6" gutterBottom>
-            Total Expenses: ${totalExpenses.toFixed(2)}
+        
+        <Paper elevation={3} sx={{ p: 3, mb: 3, bgcolor: theme.palette.primary.main, color: 'white' }}>
+          <Typography variant="h5" gutterBottom>
+            Total Expenses
+          </Typography>
+          <Typography variant="h3">
+            ${totalExpenses.toFixed(2)}
           </Typography>
         </Paper>
         
-        <Paper elevation={3} sx={{ p: 2 }}>
+        <Paper elevation={3} sx={{ p: 2, mb: 8 }}>
+          <Typography variant="h6" gutterBottom sx={{ p: 2 }}>
+            Recent Expenses
+          </Typography>
+          <Divider />
           <List>
-            {expenses.map((expense) => (
-              <ListItem key={expense._id}>
-                <ListItemText
-                  primary={`$${expense.amount.toFixed(2)} - ${expense.category}`}
-                  secondary={`${expense.description} (${new Date(expense.date).toLocaleDateString()})`}
+            {expenses.length === 0 ? (
+              <ListItem>
+                <ListItemText 
+                  primary="No expenses yet"
+                  secondary="Click the + button to add your first expense"
                 />
-                <ListItemSecondaryAction>
-                  <IconButton
-                    edge="end"
-                    aria-label="delete"
-                    onClick={() => handleDelete(expense._id)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
               </ListItem>
-            ))}
+            ) : (
+              expenses.map((expense) => (
+                <ListItem key={expense._id}>
+                  <ListItemText
+                    primary={
+                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                        ${expense.amount.toFixed(2)} - {expense.category}
+                      </Typography>
+                    }
+                    secondary={
+                      <>
+                        <Typography variant="body2" color="textSecondary">
+                          {expense.description}
+                        </Typography>
+                        <Typography variant="caption" color="textSecondary">
+                          {new Date(expense.date).toLocaleDateString()}
+                        </Typography>
+                      </>
+                    }
+                  />
+                  <ListItemSecondaryAction>
+                    <IconButton
+                      edge="end"
+                      aria-label="delete"
+                      onClick={() => handleDelete(expense._id)}
+                      sx={{ color: theme.palette.error.main }}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </ListItemSecondaryAction>
+                </ListItem>
+              ))
+            )}
           </List>
         </Paper>
 
         <Fab
           color="primary"
-          aria-label="add"
-          sx={{ position: 'fixed', bottom: 16, right: 16 }}
+          aria-label="add expense"
+          sx={{
+            position: 'fixed',
+            bottom: 32,
+            right: 32,
+            zIndex: 1000,
+          }}
           onClick={() => navigate('/add-expense')}
         >
           <AddIcon />
