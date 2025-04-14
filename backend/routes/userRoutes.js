@@ -5,6 +5,38 @@ import User from "../models/user.js";
 
 const router = express.Router();
 
+// Register a new user
+router.post("/register", async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    // Create new user
+    const user = new User({
+      name,
+      email,
+      password: hashedPassword,
+    });
+
+    await user.save();
+
+    // Generate JWT token
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+
+    res.status(201).json({ token });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Login a user
 router.post("/login", async (req, res) => {
   try {
