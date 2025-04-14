@@ -33,4 +33,23 @@ router.post("/", authenticate, async (req, res) => {
   }
 });
 
+// Delete an expense
+router.delete("/:id", authenticate, async (req, res) => {
+  try {
+    const expense = await Expense.findOne({ 
+      _id: req.params.id,
+      userId: req.user.id 
+    });
+
+    if (!expense) {
+      return res.status(404).json({ message: "Expense not found" });
+    }
+
+    await expense.deleteOne();
+    res.status(200).json({ message: "Expense deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 export default router;
