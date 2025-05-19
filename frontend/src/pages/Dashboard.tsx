@@ -12,8 +12,9 @@ import {
   Fab,
   Divider,
   useTheme,
+  Button,
 } from '@mui/material';
-import { Add as AddIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Add as AddIcon, Delete as DeleteIcon, Logout as LogoutIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
@@ -82,12 +83,35 @@ const Dashboard = () => {
 
   const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
 
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    toast.success('Logged out successfully');
+    navigate('/login');
+  };
+
   return (
     <Container maxWidth="md">
       <Box sx={{ mt: 4, mb: 4, position: 'relative', minHeight: '80vh' }}>
-        <Typography variant="h4" component="h1" gutterBottom sx={{ color: theme.palette.primary.main }}>
-          Expense Dashboard
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
+          <Typography variant="h4" component="h1" sx={{ color: theme.palette.primary.main }}>
+            Expense Dashboard
+          </Typography>
+          <Button
+            variant="outlined"
+            color="primary"
+            startIcon={<LogoutIcon />}
+            onClick={handleLogout}
+            sx={{ 
+              borderColor: theme.palette.primary.main,
+              '&:hover': {
+                borderColor: theme.palette.primary.dark,
+                backgroundColor: theme.palette.primary.light,
+              }
+            }}
+          >
+            Logout
+          </Button>
+        </Box>
         
         <Paper elevation={3} sx={{ p: 3, mb: 3, bgcolor: theme.palette.primary.main, color: 'white' }}>
           <Typography variant="h5" gutterBottom>

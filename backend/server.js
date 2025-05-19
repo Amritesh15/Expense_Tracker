@@ -8,7 +8,14 @@ import userRoutes from "./routes/userRoutes.js";
 dotenv.config();
 
 const app = express();
-app.use(cors());
+
+// Configure CORS to accept requests from any origin
+app.use(cors({
+  origin: '*',
+  methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
