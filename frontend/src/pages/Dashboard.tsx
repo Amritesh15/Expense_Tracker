@@ -33,7 +33,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     fetchExpenses();
-  }, []);
+  }, [1]);
 
   const fetchExpenses = async () => {
     try {
@@ -43,7 +43,7 @@ const Dashboard = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/expenses', {
+      const response = await fetch('http://18.208.127.51:5000/api/expenses/getAllExpenses', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -52,6 +52,8 @@ const Dashboard = () => {
       if (response.ok) {
         const data = await response.json();
         setExpenses(data);
+        console.log("After setExpenses");
+        
       } else {
         throw new Error('Failed to fetch expenses');
       }
@@ -63,7 +65,7 @@ const Dashboard = () => {
   const handleDelete = async (id: string) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/expenses/${id}`, {
+      const response = await fetch(`http://18.208.127.51:5000/api/expenses/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

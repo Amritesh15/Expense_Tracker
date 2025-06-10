@@ -5,7 +5,7 @@ import authenticate from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 // Get all expenses for a logged-in user
-router.get("/", authenticate, async (req, res) => {
+router.get("/getAllExpenses", authenticate, async (req, res) => {
   try {
     const expenses = await Expense.find({ userId: req.user.id }); // Use req.user.id from decoded JWT
     res.status(200).json(expenses);
@@ -15,7 +15,7 @@ router.get("/", authenticate, async (req, res) => {
 });
 
 // Add a new expense
-router.post("/", authenticate, async (req, res) => {
+router.post("/add", authenticate, async (req, res) => {
   try {
     const { amount, category, description } = req.body;
 
