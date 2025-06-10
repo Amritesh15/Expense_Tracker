@@ -54,7 +54,7 @@ const AddExpense = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/expenses', {
+      const response = await fetch('http://18.208.127.51:5000/api/expenses/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ const AddExpense = () => {
 
       if (response.ok) {
         toast.success('Expense added successfully');
-        navigate('/dashboard');
+       
       } else {
         const data = await response.json();
         throw new Error(data.message || 'Failed to add expense');

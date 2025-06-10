@@ -35,7 +35,7 @@ const Login = () => {
     e.preventDefault();
     try {
       // TODO: Implement login API call
-      const response = await fetch('http://localhost:5000/api/users/login', {
+      const response = await fetch('http://18.208.127.51:5000/api/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
