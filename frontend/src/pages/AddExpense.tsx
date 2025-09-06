@@ -54,7 +54,7 @@ const AddExpense = () => {
         return;
       }
 
-      const response = await fetch('http://18.208.127.51:5000/api/expenses/add', {
+      const response = await fetch('http://localhost:5000/api/expenses/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

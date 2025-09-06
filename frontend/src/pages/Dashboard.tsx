@@ -43,7 +43,7 @@ const Dashboard = () => {
         return;
       }
 
-      const response = await fetch('http://18.208.127.51:5000/api/expenses/getAllExpenses', {
+      const response = await fetch('http://localhost:5000/api/expenses/getAllExpenses', {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -65,7 +65,7 @@ const Dashboard = () => {
   const handleDelete = async (id: string) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://18.208.127.51:5000/api/expenses/${id}`, {
+      const response = await fetch(`http://localhost:5000/api/expenses/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
