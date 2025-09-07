@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 import {
   Container,
   Typography,
@@ -43,7 +44,7 @@ const Dashboard = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/expenses/getAllExpenses', {
+      const response = await fetch(`${API_BASE_URL}/api/expenses/getAllExpenses`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -65,7 +66,7 @@ const Dashboard = () => {
   const handleDelete = async (id: string) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/expenses/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/expenses/${id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

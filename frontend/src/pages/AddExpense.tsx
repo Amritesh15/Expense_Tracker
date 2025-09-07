@@ -10,7 +10,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 const categories = [
   'Food',
   'Transportation',
@@ -54,7 +54,7 @@ const AddExpense = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/expenses/add', {
+      const response = await fetch(`${API_BASE_URL}/api/expenses/add`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
