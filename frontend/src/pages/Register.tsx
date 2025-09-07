@@ -45,16 +45,19 @@ const Register = () => {
     }
 
     try {
+      // Convert email to lowercase for consistency
+      const normalizedFormData = {
+        name: formData.name,
+        email: formData.email.toLowerCase().trim(),
+        password: formData.password,
+      };
+
       const response = await fetch(`${API_BASE_URL}/api/users/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          password: formData.password,
-        }),
+        body: JSON.stringify(normalizedFormData),
       });
 
       const data = await response.json();

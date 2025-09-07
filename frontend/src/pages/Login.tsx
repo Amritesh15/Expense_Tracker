@@ -35,13 +35,18 @@ const Login = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      // TODO: Implement login API call
+      // Convert email to lowercase for consistency
+      const normalizedFormData = {
+        ...formData,
+        email: formData.email.toLowerCase().trim()
+      };
+
       const response = await fetch(`${API_BASE_URL}/api/users/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(normalizedFormData),
       });
 
       const data = await response.json();

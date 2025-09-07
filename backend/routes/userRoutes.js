@@ -10,8 +10,11 @@ router.post("/register", async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
+    // Convert email to lowercase for consistency
+    const normalizedEmail = email.toLowerCase().trim();
+
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: normalizedEmail });
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
@@ -22,7 +25,7 @@ router.post("/register", async (req, res) => {
     // Create new user
     const user = new User({
       name,
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
     });
 
@@ -42,9 +45,11 @@ router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
     
+    // Convert email to lowercase for consistency
+    const normalizedEmail = email.toLowerCase().trim();
 
     // Find the user by email
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: normalizedEmail });
     
     if (!user) return res.status(404).json({ message: "User not found" });
 
