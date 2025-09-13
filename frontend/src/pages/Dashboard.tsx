@@ -1,23 +1,14 @@
 import { useState, useEffect } from 'react';
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-import {
-  Container,
-  Typography,
-  Box,
-  Paper,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemSecondaryAction,
-  IconButton,
-  Fab,
-  Divider,
-  useTheme,
-  Button,
+import { 
+  Container, Typography, Box, Paper, List, ListItem, 
+  ListItemText, ListItemSecondaryAction, IconButton, Divider, 
+  useTheme, Button 
 } from '@mui/material';
 import { Add as AddIcon, Delete as DeleteIcon, Logout as LogoutIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 interface Expense {
   _id: string;
@@ -32,33 +23,22 @@ const Dashboard = () => {
   const theme = useTheme();
   const [expenses, setExpenses] = useState<Expense[]>([]);
 
-  useEffect(() => {
-    fetchExpenses();
-  }, [1]);
+  useEffect(() => { fetchExpenses(); }, []);
 
   const fetchExpenses = async () => {
     try {
       const token = localStorage.getItem('token');
-      if (!token) {
-        navigate('/login');
-        return;
-      }
+      if (!token) { navigate('/login'); return; }
 
       const response = await fetch(`${API_BASE_URL}/api/expenses/getAllExpenses`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (response.ok) {
         const data = await response.json();
         setExpenses(data);
-        console.log("After setExpenses");
-        
-      } else {
-        throw new Error('Failed to fetch expenses');
-      }
-    } catch (error) {
+      } else throw new Error('Failed to fetch expenses');
+    } catch {
       toast.error('Failed to load expenses');
     }
   };
@@ -68,23 +48,17 @@ const Dashboard = () => {
       const token = localStorage.getItem('token');
       const response = await fetch(`${API_BASE_URL}/api/expenses/${id}`, {
         method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       if (response.ok) {
-        setExpenses(expenses.filter(expense => expense._id !== id));
+        setExpenses(expenses.filter(e => e._id !== id));
         toast.success('Expense deleted successfully');
-      } else {
-        throw new Error('Failed to delete expense');
-      }
-    } catch (error) {
+      } else throw new Error('Failed to delete expense');
+    } catch {
       toast.error('Failed to delete expense');
     }
   };
-
-  const totalExpenses = expenses.reduce((sum, expense) => sum + expense.amount, 0);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -92,61 +66,68 @@ const Dashboard = () => {
     navigate('/login');
   };
 
+  const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+
   return (
     <Container maxWidth="md">
-      <Box sx={{ mt: 4, mb: 4, position: 'relative', minHeight: '80vh' }}>
+      <Box sx={{ mt: 4, mb: 4, minHeight: '80vh' }}>
+        
+        {/* Header */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
           <Typography variant="h4" component="h1" sx={{ color: theme.palette.primary.main }}>
             Expense Dashboard
           </Typography>
+
+          {/* ✅ Logout Button in red */}
           <Button
-            variant="outlined"
-            color="primary"
+            variant="contained"
+            color="error"
             startIcon={<LogoutIcon />}
             onClick={handleLogout}
-            sx={{ 
-              borderColor: theme.palette.primary.main,
-              '&:hover': {
-                borderColor: theme.palette.primary.dark,
-                backgroundColor: theme.palette.primary.light,
-              }
-            }}
+            sx={{ textTransform: 'none', fontWeight: 600 }}
           >
             Logout
           </Button>
         </Box>
-        
+
+        {/* Total Expenses */}
         <Paper elevation={3} sx={{ p: 3, mb: 3, bgcolor: theme.palette.primary.main, color: 'white' }}>
-          <Typography variant="h5" gutterBottom>
-            Total Expenses
-          </Typography>
-          <Typography variant="h3">
-            ${totalExpenses.toFixed(2)}
-          </Typography>
+          <Typography variant="h5" gutterBottom>Total Expenses</Typography>
+          <Typography variant="h3">${totalExpenses.toFixed(2)}</Typography>
+
+          {/* Add Expense Button under Total Expenses */}
+          <Box sx={{ mt: 3, display: 'flex', justifyContent: 'center' }}>
+            <Button
+              variant="contained"
+              color="secondary"
+              startIcon={<AddIcon />}
+              onClick={() => navigate('/add-expense')}
+              sx={{ textTransform: 'none', fontWeight: 600 }}
+            >
+              Add Expense
+            </Button>
+          </Box>
         </Paper>
-        
+
+        {/* Recent Expenses */}
         <Paper elevation={3} sx={{ p: 2, mb: 8 }}>
-          <Typography variant="h6" gutterBottom sx={{ p: 2 }}>
-            Recent Expenses
-          </Typography>
+          <Typography variant="h6" gutterBottom sx={{ p: 2 }}>Recent Expenses</Typography>
           <Divider />
           <List>
             {expenses.length === 0 ? (
               <ListItem>
                 <ListItemText 
                   primary="No expenses yet"
-                  secondary="Click the + button to add your first expense"
+                  secondary="Click the Add Expense button to add your first expense"
                 />
               </ListItem>
             ) : (
-              expenses.map((expense) => (
+              expenses.map(expense => (
                 <ListItem key={expense._id}>
                   <ListItemText
-                    primary={
-                      <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
-                        ${expense.amount.toFixed(2)} - {expense.category}
-                      </Typography>
-                    }
+                    primary={<Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>
+                      ${expense.amount.toFixed(2)} - {expense.category}
+                    </Typography>}
                     secondary={
                       <>
                         <Typography variant="body2" color="textSecondary">
@@ -174,22 +155,9 @@ const Dashboard = () => {
           </List>
         </Paper>
 
-        <Fab
-          color="primary"
-          aria-label="add expense"
-          sx={{
-            position: 'fixed',
-            bottom: 32,
-            right: 32,
-            zIndex: 1000,
-          }}
-          onClick={() => navigate('/add-expense')}
-        >
-          <AddIcon />
-        </Fab>
       </Box>
     </Container>
   );
 };
 
-export default Dashboard; 
+export default Dashboard;

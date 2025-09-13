@@ -66,9 +66,15 @@ const AddExpense = () => {
         }),
       });
 
-      if (response.ok) {
-        toast.success('Expense added successfully');
-       
+       if (response.ok) {
+      toast.success('Expense added successfully');
+
+      // ✅ Reset the form fields
+      setFormData({
+        amount: '',
+        category: '',
+        description: '',
+      });
       } else {
         const data = await response.json();
         throw new Error(data.message || 'Failed to add expense');
