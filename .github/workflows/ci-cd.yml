@@ -49,7 +49,7 @@ jobs:
           echo "$KEY" > key.pem
           chmod 600 key.pem
           # Deploy frontend build to Nginx directory
-          scp -i key.pem -r Expense_Tracker/frontend/dist/* $USER@$HOST:/home/ec2-user/Expense_Tracker/frontend/dist
-          scp -i key.pem -r Expense_Tracker/backend/* $USER@$HOST:/home/ec2-user/Expense_Tracker/backend
+          scp -i key.pem -r frontend/dist/* $USER@$HOST:/home/ec2-user/Expense_Tracker/frontend/dist
+          scp -i key.pem -r backend/* $USER@$HOST:/home/ec2-user/Expense_Tracker/backend
           ssh -i key.pem $USER@$HOST "cd /home/ec2-user/Expense_Tracker/backend && npm install && pm2 restart expense-backend"
           rm key.pem
