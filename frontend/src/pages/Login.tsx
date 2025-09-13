@@ -35,7 +35,6 @@ const Login = () => {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     try {
-      // Convert email to lowercase for consistency
       const normalizedFormData = {
         ...formData,
         email: formData.email.toLowerCase().trim()
@@ -43,9 +42,7 @@ const Login = () => {
 
       const response = await fetch(`${API_BASE_URL}/api/users/login`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(normalizedFormData),
       });
 
@@ -58,9 +55,18 @@ const Login = () => {
       } else {
         toast.error(data.message || 'Login failed');
       }
-    } catch (error) {
+    } catch {
       toast.error('Login failed. Please try again.');
     }
+  };
+
+  // Demo login handler
+  const handleDemoLogin = () => {
+    setFormData({
+      email: 'Demo@gmail.com',   // Updated demo email
+      password: 'Demo@1234',     // Updated demo password
+    });
+    toast.info('Demo credentials filled! Click Sign In to login.');
   };
 
   return (
@@ -106,10 +112,22 @@ const Login = () => {
               type="submit"
               fullWidth
               variant="contained"
-              sx={{ mt: 3, mb: 2 }}
+              sx={{ mt: 3, mb: 1 }}
             >
               Sign In
             </Button>
+
+            {/* Demo Login Button */}
+            <Button
+              fullWidth
+              variant="outlined"
+              color="secondary"
+              onClick={handleDemoLogin}
+              sx={{ mb: 2 }}
+            >
+              Use Demo Account
+            </Button>
+
             <Box sx={{ textAlign: 'center' }}>
               <Link href="/register" variant="body2">
                 {"Don't have an account? Sign Up"}
@@ -122,4 +140,4 @@ const Login = () => {
   );
 };
 
-export default Login; 
+export default Login;
