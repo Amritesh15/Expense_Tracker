@@ -49,8 +49,6 @@ jobs:
           chmod 600 key.pem
           # Deploy frontend build to Nginx directory
           scp -i key.pem -r Expense_Tracker/frontend/dist/* $USER@$HOST:/home/ec2-user/Expense_Tracker/frontend/dist
-          # Deploy backend files (optional, update path if needed)
           scp -i key.pem -r Expense_Tracker/backend/* $USER@$HOST:/home/ec2-user/Expense_Tracker/backend
-          # Restart backend using PM2
           ssh -i key.pem $USER@$HOST "cd /home/ec2-user/Expense_Tracker/backend && npm install && pm2 restart expense-backend"
           rm key.pem
