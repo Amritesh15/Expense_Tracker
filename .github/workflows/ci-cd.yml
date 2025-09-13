@@ -1,0 +1,55 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - Staging
+  pull_request:
+    branches:
+      - main
+      - Staging
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+
+      - name: Install frontend dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Build frontend
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Install backend dependencies
+        run: |
+          cd backend
+          npm install
+
+
+      - name: Deploy frontend and backend
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/Staging'
+        env:
+          HOST: ${{ secrets.HOST }}
+          USER: ${{ secrets.USER }}
+          KEY: ${{ secrets.KEY }}
+        run: |
+          echo "$KEY" > key.pem
+          chmod 600 key.pem
+          # Deploy frontend build to Nginx directory
+          scp -o StrictHostKeyChecking=no -i key.pem -r frontend/dist/* $USER@$HOST:/home/ec2-user/Expense_Tracker/frontend/dist
+          scp -o StrictHostKeyChecking=no -i key.pem -r backend/* $USER@$HOST:/home/ec2-user/Expense_Tracker/backend
+          ssh -o StrictHostKeyChecking=no -i key.pem $USER@$HOST "cd /home/ec2-user/Expense_Tracker/backend && npm install && pm2 restart expense-backend"
+          rm key.pem
