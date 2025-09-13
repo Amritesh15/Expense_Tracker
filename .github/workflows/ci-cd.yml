@@ -22,19 +22,20 @@ jobs:
         with:
           node-version: '18'
 
+
       - name: Install frontend dependencies
         run: |
-          cd Expense_Tracker/frontend
+          cd frontend
           npm install
 
       - name: Build frontend
         run: |
-          cd Expense_Tracker/frontend
+          cd frontend
           npm run build
 
       - name: Install backend dependencies
         run: |
-          cd Expense_Tracker/backend
+          cd backend
           npm install
 
 
